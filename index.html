@@ -1,0 +1,2644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiki</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto:wght@300;400;500;700;900&display=swap">
+    <style>
+        * {
+            box-sizing: inherit;
+        }
+
+        :root {
+            --text-color: #333;
+            --origin-color: #EE4D2D;
+            --blue-color: rgb(26, 148, 255);
+            --padding-input-click: 20px;
+            --margin-left-origin: 15px;
+        }
+
+        html {
+            /*16px*/
+            font-size: 62.5%;
+            line-height: 1.6rem;
+            font-family: 'Roboto', sans-serif;
+            box-sizing: border-box;
+        }
+
+        .grid {
+            width: 1260px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .grid__full-width {
+            width: 100%;
+        }
+
+        .grid__row {
+            display: flex;
+            flex: 1;
+            flex-wrap: wrap;
+            margin-left: -5px;
+            margin-right: -5px;
+        }
+
+        .grid-column-1-6 {
+            padding-left: 5px;
+            padding-right: 5px;
+            width: 16.666%;
+            /* display: flex; */
+        }
+
+        .grid-column-1-4 {
+            padding-left: 5px;
+            padding-right: 5px;
+            width: 25%;
+            /* display: flex; */
+        }
+
+        .grid-column-1-3 {
+            padding-left: 5px;
+            padding-right: 5px;
+            width: 32%;
+            /* display: flex; */
+        }
+
+
+        .goOn {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            width: 30px;
+            height: 100%;
+            cursor: pointer;
+            right: 15px;
+            top: 0;
+        }
+
+        .goOn-square-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 50px;
+            font-size: 2.8rem;
+            background: rgba(204, 204, 204, 0.6);
+            color: white;
+        }
+
+        .goOn:hover .goOn-square-icon {
+            background-color: #999;
+        }
+
+        .prevBtn {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            width: 30px;
+            height: 100%;
+            cursor: pointer;
+            left: var(--margin-left-origin);
+            top: 0;
+
+        }
+
+        .prevBtn-square-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 50px;
+            font-size: 2.8rem;
+            background: rgba(204, 204, 204, 0.6);
+            color: white;
+        }
+
+        .prevBtn:hover .prevBtn-square-icon {
+            background-color: #999;
+        }
+
+        .tieuDePhu {
+            margin: 10px 0;
+            font-size: 1.6rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            display: none;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .modal-body {
+            /* display: flex; */
+            margin: auto;
+            z-index: 2;
+            animation: modalFadeIn ease 0.4s;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+
+        .dot-btn {
+            position: absolute;
+            text-align: center;
+            top: 0px;
+            width: 100%;
+            /* background-color: blue; */
+        }
+
+        .dot {
+            cursor: pointer;
+            height: 10px;
+            width: 10px;
+            margin: 0 2px;
+            background-color: #bbb;
+            /* background-color: blue; */
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+
+        .active,
+        .dot:hover {
+            background-color: #717171;
+        }
+
+
+        /* animation */
+        @keyframes modalFadeIn {
+            from {
+                transform: translateY(-100px);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fade {
+            from {
+                opacity: .4;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade {
+            -webkit-animation-name: fade;
+            -webkit-animation-duration: 1.5s;
+            animation-name: fade;
+            animation-duration: 1.5s;
+        }
+
+
+
+        #header {
+            background-color: rgb(26, 148, 255);
+            height: 100px;
+        }
+
+        .header-with-search {
+            display: flex;
+            height: 60px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-logo {
+            width: 60px;
+            height: 40px;
+        }
+
+        .header-logo-img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .header-search-2 {
+            display: flex;
+
+        }
+
+        .header-search {
+            height: 40px;
+            width: 750px;
+            display: flex;
+            border-radius: 3px;
+            margin: 0 20px;
+        }
+
+        .header-search-input-wrap {
+            width: 100%;
+        }
+
+        .header-search-input {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            outline: none;
+            border: none;
+            padding-left: 8px;
+        }
+
+        /* input click */
+        .header-search-input-click {
+            position: absolute;
+            width: 645px;
+            background-color: white;
+            padding-bottom: 20px;
+            display: none;
+            z-index: 1;
+        }
+
+        .header-search-input:focus~.header-search-input-click {
+            display: block;
+        }
+
+        .header-search-input-click-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px 0;
+            border: 1px solid #FFF0F1;
+        }
+
+        .header-search-input-click-header-content {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .header-search-input-click-header-img {}
+
+        .header-search-input-click-suggest-list {
+            padding-left: 0;
+        }
+
+        .header-search-input-click-suggest-item {
+            list-style: none;
+        }
+
+        .header-search-input-click-suggest-item a {
+            display: block;
+            text-decoration: none;
+            padding: 10px 20px;
+        }
+
+        .header-search-input-click-suggest-item a:hover {
+            background-color: rgba(27, 168, 255, 0.1);
+        }
+
+        .header-search-input-click-suggest-item-icon {
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+
+        .header-search-input-click-suggest-item-name {
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        .header-search-input-click-suggest-seeMore {
+            margin: 10px 0;
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--blue-color);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .header-search-input-click-popular-list {
+            padding-left: var(--padding-input-click);
+            margin-top: 20px;
+        }
+
+        .header-search-input-click-popular-list-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-search-input-click-popular-list-header-img {
+            width: 24px;
+        }
+
+        .header-search-input-click-popular-list-header span {
+            font-size: 1.3rem;
+            margin-left: 8px;
+            color: var(--text-color);
+            font-weight: 400;
+        }
+
+        .header-search-input-click-popular-item {
+            margin: 0 6px 15px;
+            list-style: none;
+        }
+
+        .header-search-input-click-popular-item a {
+            display: flex;
+            text-decoration: none;
+            background-color: rgb(250, 250, 250);
+        }
+
+        .header-search-input-click-popular-item a:hover {
+            box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.05);
+            opacity: 0.96;
+        }
+
+        .header-search-input-click-popular-item-img {
+            width: 40px;
+        }
+
+        .header-search-input-click-popular-item-name {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin: 4px 8px;
+        }
+
+        .header-search-input-click-noiBat-list {
+            padding-left: var(--padding-input-click);
+        }
+
+        .header-search-input-click-noiBat-list-header {
+            display: block;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .header-search-input-click-noiBat-item {
+            list-style: none;
+            text-align: center;
+            margin: 0 4px 10px;
+        }
+
+        .header-search-input-click-noiBat-item a {
+            text-decoration: none;
+        }
+
+        .header-search-input-click-noiBat-item:hover {
+            box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.05);
+            opacity: 0.9;
+        }
+
+        .header-search-input-click-noiBat-item-img {
+            width: 64px;
+
+        }
+
+        .header-search-input-click-noiBat-item-name {
+            display: block;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin-top: 6px;
+        }
+
+
+        .header-search-btn {
+            width: 120px;
+            height: 100%;
+            border: none;
+            background-color: rgb(13, 92, 182);
+            color: white;
+            cursor: pointer;
+        }
+
+        .header-search-btn-icon {
+            font-size: 1.4rem;
+        }
+
+        .header-search-btn-content {
+            font-size: 1.4rem;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .header-user-icon {
+            font-size: 2.6rem;
+            color: white;
+            margin-right: 10px;
+        }
+
+        .header-user-login-wrap {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-user-login {
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .header-user-account {
+            font-size: 1.2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-user-account-icon {
+            font-size: 1.1rem;
+            margin-left: 4px;
+        }
+
+        .header-cart {
+            display: flex;
+            align-items: center;
+            margin-left: 36px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .header-cart-icon {
+            font-size: 2.4rem;
+        }
+
+        .header-cart-content {
+            font-size: 1.1rem;
+            margin-left: 4px;
+            position: relative;
+            bottom: -7px;
+        }
+
+        /* header navbar */
+        .header-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-nav-icon-link {
+            display: block;
+            width: 80px;
+            height: 12px;
+        }
+
+        .header-nav-icon {
+            width: 100%;
+            height: 100%;
+        }
+
+        .header-nav-sell {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-nav-list {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            padding-left: 0;
+            margin-left: 166px;
+        }
+
+        .header-nav-item {
+            margin-right: 8px;
+        }
+
+        .header-nav-item-link {
+            color: white;
+            text-decoration: none;
+        }
+
+        .header-nav-sell-with-Tiki {
+            position: absolute;
+            right: 160px;
+            text-decoration: none;
+            color: white;
+            display: block;
+            width: 130px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .header-nav-sell-with-Tiki-icon {
+            margin-right: 8px;
+        }
+
+        /* Tiki body */
+        .tiki-container {
+            background-color: rgba(204, 204, 204, 0.192);
+            /* background-color: red; */
+        }
+
+        .body-filter {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+            height: 40px;
+            width: 100%;
+            /* background: white; */
+        }
+
+        .body-filter-list {
+            display: flex;
+            justify-content: space-between;
+            padding-left: 15px;
+        }
+
+        .body-filter-item {
+            font-size: 1.4rem;
+            list-style: none;
+            color: var(--text-color);
+            margin: 0 16px;
+        }
+
+        .body-filter-item-link {
+            text-decoration: none;
+            display: block;
+        }
+
+        .body-filter-goOn {
+            font-size: 1.2rem;
+        }
+
+        .body-slider {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px;
+        }
+
+        .body-slider-advertise-wrap {
+            /* position: relative; */
+        }
+
+        .body-slider .prevBtn {
+            left: 0px;
+        }
+
+        .body-slider .goOn {
+            right: calc(33% + 5px);
+        }
+
+        .body-slider .dot-btn {
+            position: absolute;
+            top: 93%;
+            /* margin: auto; */
+            margin-left: -18%;
+        }
+
+        .body-slider-advertise {
+            display: block;
+            width: 820px;
+            height: 270px;
+        }
+
+        .body-slider-advertise_img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .body-slider-sieu-sale {
+            width: 400px;
+            height: 270px;
+        }
+
+        .body-slider-sieu-sale-img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .body-sock-price-products {
+            position: relative;
+        }
+
+        /* produce sale today */
+        .body-sock-price {
+            background-color: white;
+            margin-top: 30px;
+        }
+
+        .body-sock-price-products .goOn {
+            right: 0;
+
+        }
+
+        .body-sock-price-products .prevBtn {
+            left: 0;
+        }
+
+        .body-sock-price-header {
+            font-size: 2.4rem;
+            color: var(--origin-color);
+            padding-left: 5px;
+            margin-bottom: 30px;
+        }
+
+        .body-sock-price-item {
+            /* display: none; */
+        }
+
+        .body-sock-price-item:hover {
+            box-shadow: 20px 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .body-sock-price-item-link {
+            position: relative;
+            text-decoration: none;
+            display: block;
+        }
+
+        .body-sock-price-item-img {
+            padding-top: 100%;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+
+        .body-sock-price-item-imgSale {
+            position: absolute;
+            bottom: 32px;
+            width: 130px;
+        }
+
+        .body-sock-price-item-saled {
+            display: flex;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .body-sock-price-item-price {
+            font-size: 1.6rem;
+            color: var(--origin-color);
+            margin-right: 20px;
+        }
+
+        .body-sock-price-item-sale-percent {
+            font-size: 1.2rem;
+            color: var(--origin-color);
+            width: 30px;
+            height: 15px;
+            background-color: #FFF0F1;
+            border: 1px solid var(--origin-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .body-sock-price-products {
+            display: flex;
+            align-items: center;
+        }
+
+        .body-sock-price-goOn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 80px;
+            background-color: #FFF0F1;
+            cursor: pointer;
+        }
+
+        .body-sock-price-goOn:hover {
+            background-color: #ccc;
+        }
+
+        .body-sock-price-goOn-icon {
+            font-size: 2.6rem;
+            color: white;
+            font-weight: 200;
+        }
+
+        .body-background-sale-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .body-background-sale-1 {
+            width: 200px;
+            height: 160px;
+        }
+
+        .body-background-sale-1-img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .body-background-sale-2 {
+            width: 800px;
+            height: 160px;
+        }
+
+        .body-background-sale-2-img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .body-background-sale-1:hover {
+            opacity: 0.8;
+        }
+
+        .body-background-sale-2:hover {
+            opacity: 0.8;
+        }
+
+
+        .danhMuc-list {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 0;
+            background-color: white;
+            border-radius: 5px;
+            margin-top: 15px;
+            padding: 20px 0;
+            list-style: none;
+        }
+
+        .danhMuc-item {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            flex-basis: 103px;
+            flex-direction: column;
+        }
+
+        .danhMuc-item-link {
+            text-decoration: none;
+        }
+
+        .danhMuc-item-img {
+            width: 48px;
+        }
+
+        .danhMuc-item-name {
+            display: block;
+            width: 60px;
+            color: var(--text-color);
+            font-size: 1.3rem;
+            text-align: center;
+            font-weight: 400;
+            margin-top: 12px;
+        }
+
+        .body-banner {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .body-banner-item {
+            width: 100%;
+        }
+
+        .body-banner-item:hover {
+            opacity: 0.8;
+        }
+
+        .body-banner-item-img {
+            width: 100%;
+            border-radius: 15px;
+        }
+
+
+        .body-genuine-brand {
+            margin-top: 15px;
+            background-color: white;
+        }
+
+        .body-genuine-brand-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .body-genuine-brand-header-img {
+            margin: 20px 15px;
+            width: 25px;
+        }
+
+        .body-genuine-brand-header-content {
+            font-size: 1.8rem;
+            color: var(--text-color);
+            font-weight: 400;
+        }
+
+        .body-genuine-brand-banner {
+            position: relative;
+        }
+
+        .body-genuine-brand-banner-slide {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            /* display: none; */
+        }
+
+        .body-genuine-brand-banner-img {
+            width: 600px;
+            height: 200px;
+        }
+
+        .body-genuine-brand-wrap {
+            position: relative;
+
+        }
+
+        .body-genuine-brand-list {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            padding-left: 0px;
+            margin: 20px 10px;
+            padding-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .body-genuine-brand-item {
+            position: relative;
+            border: 1px solid rgba(204, 204, 204, 0.6);
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+
+        .body-genuine-brand-item:hover {
+            opacity: 0.9;
+        }
+
+        .body-genuine-brand-item-link {
+            text-decoration: none;
+        }
+
+        .body-genuine-brand-item-img {
+            width: 100%;
+        }
+
+        .body-genuine-brand-item-content {
+            display: block;
+            width: 100%;
+            position: absolute;
+            bottom: 7%;
+            text-align: center;
+            font-size: 1.4rem;
+            color: var(--blue-color);
+        }
+
+        /* Danh muc noi bat */
+        .body-featured-categories {
+            margin-top: 20px;
+            background-color: white;
+        }
+
+        .body-featured-categories-header {
+            padding-top: 6px;
+            margin-left: var(--margin-left-origin);
+        }
+
+        .body-featured-categories-header span {
+            font-size: 1.6rem;
+            font-weight: 400;
+            display: block;
+            margin-top: 20px;
+        }
+
+        .body-featured-categories-list {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            list-style: none;
+            padding: var(--margin-left-origin);
+        }
+
+        .body-featured-categories-item {
+            width: 8%;
+            height: 80px;
+            margin: 0 10px 20px;
+            margin-bottom: 30px;
+        }
+
+        .body-featured-categories-item a {
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .body-featured-categories-item-img {
+            width: 48px;
+            height: 48px;
+        }
+
+        .body-featured-categories-item-name {
+            display: block;
+            color: var(--text-color);
+            width: 70%;
+            font-size: 1.3rem;
+            line-height: 20px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Xu huong mua sam */
+        .body-trending {
+            margin-top: 20px;
+            background-color: white;
+        }
+
+        .body-trending-header {
+            display: flex;
+            align-items: center;
+            margin-left: var(--margin-left-origin);
+            padding-top: 15px;
+        }
+
+        .body-trending-header-img {
+            width: 24px;
+            margin-right: 8px;
+        }
+
+        .body-trending-header-title {
+            font-size: 1.6rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .body-trending-list {
+            position: relative;
+
+            padding-left: var(--margin-left-origin);
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .body-trending-item {
+            list-style: none;
+            margin: 0 10px 15px;
+        }
+
+        .body-trending-item a {
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .body-trending-item-name {
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+
+        .body-trending-item-sale {
+            font-size: 1.2rem;
+            color: var(--blue-color);
+            font-weight: 400;
+            margin-left: 10px;
+            margin-top: 4px;
+        }
+
+        .body-trending-item-img {
+            margin-top: 15px;
+            display: flex;
+        }
+
+        .body-trending-item-img1 {
+            width: 120px;
+        }
+
+        .body-trending-item a:hover .body-trending-item-img {
+            opacity: 0.8;
+        }
+
+        /* goi y hom nay */
+        .body-recomment-today {
+            position: sticky;
+            z-index: 998;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 5px;
+            background-color: white;
+        }
+
+        .body-recomment-today-header {
+            margin-left: var(--margin-left-origin);
+            padding-top: 15px;
+        }
+
+        .body-recomment-today-header span {
+            font-size: 1.8rem;
+            color: var(--text-color);
+            font-weight: 400;
+        }
+
+        .body-recomment-today-list {
+            padding-left: var(--margin-left-origin);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .body-recomment-today-item {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            flex-wrap: wrap;
+            list-style: none;
+            width: 11.6%;
+            margin: 15px 5px;
+            background-color: white;
+            box-shadow: 20px 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .body-recomment-today-item:hover {
+            opacity: 0.9;
+            cursor: pointer;
+        }
+
+        .body-recomment-today-item.select {
+            border: 1px solid var(--blue-color);
+            border-radius: 3px;
+        }
+
+        .body-recomment-today-item-img {
+            width: 48px;
+            margin-bottom: 4px;
+        }
+
+        .body-recomment-today-item-title {
+            display: block;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+
+        /* product today */
+        .body-recomment-today-product-list {
+            padding-left: var(--margin-left-origin);
+        }
+
+        .body-recomment-today-product-item {
+            list-style: none;
+            margin: 0 20px 30px 0;
+            /* display: none; */
+        }
+
+        .body-recomment-today-product-item a {
+            text-decoration: none;
+        }
+
+        .body-recomment-today-product-item-img-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .body-recomment-today-product-item-img {
+            /* padding-top: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 200px; */
+            width: 180px;
+            height: 240px;
+        }
+
+        .body-recomment-today-product-item-img-freeShip {
+            position: absolute;
+            bottom: 4px;
+            width: 130px;
+        }
+
+        .body-recomment-today-product-item-name {
+            font-size: 1.3rem;
+            color: var(--text-color);
+            font-weight: 400;
+            display: block;
+            margin-top: 8px;
+            overflow: hidden;
+            display: -webkit-inline-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+
+        .body-recomment-today-product-item-danhGia {
+            display: flex;
+            align-items: center;
+        }
+
+        .body-recomment-today-product-item-danhGia-star {
+            margin-bottom: 4px;
+        }
+
+        .body-recomment-today-product-item-danhGia-star-icon {
+            font-size: 0.8rem;
+        }
+
+        .body-recomment-today-product-item-danhGia-star-icon.like {
+            color: rgb(253, 216, 54);
+        }
+
+        .body-recomment-today-product-item-danhGia-sold {
+            font-size: 1.2rem;
+            color: #999;
+            margin-left: 4px;
+        }
+
+        .body-recomment-today-product-item-price {
+            margin-top: 4px;
+        }
+
+        .body-recomment-today-product-item-price span {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .body-recomment-today-product-item-seeMore,
+        .body-recomment-today-product-item-anBot {
+            display: flex;
+            justify-content: center;
+        }
+
+        .body-recomment-today-product-item-seeMore-btn,
+        .body-recomment-today-product-item-anBot-btn {
+            display: flex;
+            margin: auto;
+            justify-content: center;
+            align-items: center;
+            width: 240px;
+            height: 36px;
+            border: 1px solid var(--blue-color);
+            background-color: white;
+            color: var(--text-color);
+        }
+
+        .body-recomment-today-product-item-seeMore-btn:hover,
+        .body-recomment-today-product-item-anBot-btn:hover {
+            background-color: var(--blue-color);
+            color: white;
+        }
+
+        .body-recomment-today-product-item-anBot-btn {
+            display: none;
+        }
+
+        /* Footer */
+        #footer {}
+
+        .footer-app-tiki {
+            /* margin-top: 30px; */
+            display: flex;
+            /* align-items: center; */
+            justify-content: space-between;
+            background-color: white;
+        }
+
+        .footer-hoTro-list,
+        .footer-about-tiki-list,
+        .footer-hopTac,
+        .footer-thanhToan,
+        .footer-ketNoi,
+        .footer-ketNoi-taiTuDT {
+            padding: 10px var(--margin-left-origin);
+            /* width: 20%; */
+        }
+
+        .footer-list-header {
+            font-size: 1.6rem;
+            color: var(--text-color);
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .footer-hoTro-list {}
+
+        .footer-item {
+            list-style: none;
+            line-height: 20px;
+            color: var(--text-color);
+        }
+
+        .footer-item:hover {
+            text-decoration: underline;
+        }
+
+        .footer-item a {
+            text-decoration: none;
+            /* color: #999; */
+            font-size: 1.2rem;
+        }
+
+        .footer-hopTac-chungNhan-anh {
+            display: flex;
+        }
+
+        .footer-hopTac-chungNhan-img:first-child {
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
+        }
+
+        .footer-hopTac-chungNhan-img:last-child {
+            width: 80px;
+        }
+
+        .footer-thanhToan-item {
+            font-size: 1.2rem;
+            line-height: 20px;
+            list-style: none;
+        }
+
+        .footer-thanhToan-giaoHang {
+            margin-top: 10px;
+        }
+
+        .footer-thanhToan-giaoHang-img {
+            width: 68px;
+            height: 32px;
+        }
+
+        .footer-ketNoi-item-wrap {
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-ketNoi-item {
+            list-style: none;
+            margin: 10px 3px;
+        }
+
+        .footer-ketNoi-item a {
+            text-decoration: none;
+        }
+
+        .footer-ketNoi-item-img {
+            width: 32px;
+        }
+
+        .footer-ketNoi-taiTuDT-list {
+            display: flex;
+        }
+
+        .footer-ketNoi-taiTuDT-list-QRcode {
+            width: 80px;
+            margin-right: 10px;
+        }
+
+        .footer-ketNoi-taiTuDT-list-mobile {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .footer-ketNoi-taiTuDT-list-mobile-img {
+            width: 100px;
+        }
+
+        /* Form dang ki */
+        .auth-form {
+            width: 800px;
+            background-color: white;
+            border-radius: 20px;
+
+        }
+
+        .auth-form__container {
+            position: relative;
+            padding: 0 0 0 32px;
+            display: flex;
+        }
+
+        .auth-form__container-login {
+            padding: 10px 32px 15px 0;
+            width: 60%;
+        }
+
+        .auth-form__container-login-heading {}
+
+        .auth-form__container-heading-welcome {
+            font-size: 2.6rem;
+            color: var(--text-color);
+            margin-bottom: 12px;
+        }
+
+        .auth-form__container-heading-login {
+            font-size: 1.4rem;
+            color: var(--text-color);
+            font-weight: 400;
+        }
+
+        .auth-form__container-login-body {
+            margin-top: 15px;
+        }
+
+        .auth-form__container-login-body-input {
+            display: block;
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            outline: none;
+            height: 50px;
+            font-size: 2rem;
+            /* padding-left: 8px; */
+
+        }
+
+        .auth-form__container-login-body-btn {
+            display: block;
+            margin-top: 20px;
+            width: 100%;
+            height: 45px;
+            border: none;
+            font-size: 1.8rem;
+            background-color: #FF424E;
+            color: white;
+            border-radius: 6px;
+        }
+
+        .auth-form__container-login-body-btn:hover {
+            cursor: pointer;
+            opacity: 0.9;
+        }
+
+        .auth-form__container-login-body-email {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: var(--blue-color);
+            font-size: 1.4rem;
+            text-align: center;
+        }
+
+        .auth-form__container-login-footer {
+            margin-top: 80px;
+        }
+
+        .auth-form__container-login-footer-title {
+            font-size: 1.4rem;
+            color: var(--text-color);
+            text-align: center;
+        }
+
+        .auth-form__container-login-footer-list {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 0;
+        }
+
+        .auth-form__container-login-footer-item {
+            list-style: none;
+            margin: 20px 5px;
+        }
+
+        .auth-form__container-login-footer-item-img {
+            text-decoration: none;
+            width: 48px;
+        }
+
+        .auth-form__container-login-footer-dieuKhoan {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        .auth-form__container-login-footer-dieuKhoan a {
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        /* auth form background */
+        .auth-form__container-background {
+            width: 40%;
+            background-color: rgb(219, 238, 255);
+            ;
+            border-radius: 20px;
+        }
+
+        .auth-form__container-background-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40%;
+        }
+
+        .auth-form__container-background-content-img {
+            width: 200px;
+        }
+
+        .auth-form__container-background-content-title {
+            text-align: center;
+        }
+
+        .auth-form__container-background-content-title h4 {
+            font-size: 1.8rem;
+            color: var(--blue-color);
+            font-weight: 500;
+        }
+
+        .auth-form__container-background-content-title p {
+            font-size: 1.2rem;
+            color: var(--blue-color);
+            margin-top: 10px;
+        }
+
+        .auth-form__container-close {
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 2.2rem;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tiki-web">
+        <header id="header">
+            <div class="grid">
+                <div class="header-with-search">
+                    <a class="header-logo">
+                        <img src="./access/imgs/logo.png" alt="" class="header-logo-img">
+                    </a>
+                    <div class="header-search-2">
+                        <div class="header-search">
+                            <div class="header-search-input-wrap">
+                                <input class="header-search-input" type="text"
+                                    placeholder="Tim kiem san pham,danh muc hay thuong hieu mong muon">
+
+                                <div class="header-search-input-click">
+                                    <div class="header-search-input-click-header">
+                                        <span class="header-search-input-click-header-content">Fashion Day - Giảm đến
+                                            90%</span>
+                                        <img src="https://salt.tikicdn.com/cache/140x28/ts/banner/fc/b3/98/e052603014ccd72dbbf983d9fe419db5.png.webp"
+                                            alt="" class="header-search-input-click-header-img">
+                                    </div>
+
+                                    <ul class="header-search-input-click-suggest-list">
+                                        <li class="header-search-input-click-suggest-item">
+                                            <a href="">
+                                                <i
+                                                    class="header-search-input-click-suggest-item-icon fas fa-search"></i>
+                                                <span class="header-search-input-click-suggest-item-name">iphone 13 pro
+                                                    max</span>
+                                            </a>
+                                        </li>
+                                        <li class="header-search-input-click-suggest-item">
+                                            <a href="">
+                                                <i
+                                                    class="header-search-input-click-suggest-item-icon fas fa-search"></i>
+                                                <span class="header-search-input-click-suggest-item-name">Samsung
+                                                    galaxy</span>
+                                            </a>
+                                        </li>
+                                        <li class="header-search-input-click-suggest-item">
+                                            <a href="">
+                                                <i
+                                                    class="header-search-input-click-suggest-item-icon fas fa-search"></i>
+                                                <span class="header-search-input-click-suggest-item-name">Yugioh</span>
+                                            </a>
+                                        </li>
+                                        <div class="header-search-input-click-suggest-seeMore">
+                                            <span>Xem thêm</span>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </ul>
+
+                                    <ul class="header-search-input-click-popular-list">
+                                        <div class="header-search-input-click-popular-list-header">
+                                            <img src="https://salt.tikicdn.com/ts/upload/4f/03/a0/2455cd7c0f3aef0c4fd58aa7ff93545a.png"
+                                                alt="" class="header-search-input-click-popular-list-header-img">
+                                            <span>Tìm kiếm phổ biến</span>
+                                        </div>
+                                        <div class="grid__row">
+                                            <div class="grid-column-1-3">
+                                                <li class="header-search-input-click-popular-item">
+                                                    <a href="">
+                                                        <img src="https://salt.tikicdn.com/cache/280x280/ts/product/8a/cc/66/9f9bf860e11ce4a941e672ddbc772b52.jpg"
+                                                            alt="" class="header-search-input-click-popular-item-img">
+                                                        <span class="header-search-input-click-popular-item-name">Sữa
+                                                            tắm</span>
+                                                    </a>
+                                                </li>
+                                            </div>
+
+                                        </div>
+                                    </ul>
+
+                                    <ul class="header-search-input-click-noiBat-list">
+                                        <span class="header-search-input-click-noiBat-list-header">Danh mục nổi
+                                            bật</span>
+                                        <div class="grid__row">
+                                            <div class="grid-column-1-4">
+                                                <li class="header-search-input-click-noiBat-item">
+                                                    <a href="">
+                                                        <img src="https://salt.tikicdn.com/cache/280x280/ts/product/22/cb/a9/524a27dcd45e8a13ae6eecb3dfacba7c.jpg"
+                                                            alt="" class="header-search-input-click-noiBat-item-img">
+                                                        <span class="header-search-input-click-noiBat-item-name">Sách tư
+                                                            duy-kĩ năng sống</span>
+                                                    </a>
+                                                </li>
+                                            </div>
+                                        </div>
+
+                                    </ul>
+                                </div>
+                            </div>
+                            <button class="header-search-btn">
+                                <i class="header-search-btn-icon fas fa-search"></i>
+                                <span class="header-search-btn-content">Tim kiem</span>
+                            </button>
+                        </div>
+
+                        <div class="header-user">
+                            <div class="header-user-icon">
+                                <i class="far fa-user"></i>
+                            </div>
+                            <span class="header-user-login-wrap">
+                                <span class="header-user-login">Dang nhap / Dang ki</span>
+                                <span class="header-user-account">
+                                    Tai khoan
+                                    <i class="header-user-account-icon fas fa-angle-down"></i>
+                                </span>
+                            </span>
+                        </div>
+
+                        <div class="header-cart">
+                            <div class="header-cart-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <span class="header-cart-content">Gio hang</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Header navbar -->
+                <div class="header-nav">
+                    <a href="" class="header-nav-icon-link">
+                        <img src="./access/imgs/freeShip.png" alt="" class="header-nav-icon">
+                    </a>
+                    <div class="header-nav-sell">
+                        <ul class="header-nav-list">
+                            <li class="header-nav-item">
+                                <a href="" class="header-nav-item-link">tất cả thịt rau củ</a>
+                            </li>
+                            <li class="header-nav-item">
+                                <a href="" class="header-nav-item-link">thịt</a>
+                            </li>
+                            <li class="header-nav-item">
+                                <a href="" class="header-nav-item-link"> hàng đông lạnh</a>
+                            </li>
+                            <li class="header-nav-item">
+                                <a href="" class="header-nav-item-link">trái cây</a>
+                            </li>
+                            <li class="header-nav-item">
+                                <hải href="" class="header-nav-item-link">hải sản</a>
+                            </li>
+                            <li class="header-nav-item">
+                                <a href="" class="header-nav-item-link">gạo</a>
+                            </li>
+                        </ul>
+
+                        <a class="header-nav-sell-with-Tiki" href="">
+                            <i class="header-nav-sell-with-Tiki-icon fas fa-store"></i>
+                            Bán hàng cùng tiki
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div id="body">
+            <div class="tiki-container">
+                <div class="grid">
+                    <div class="body-filter">
+                        <ul class="body-filter-list">
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Thịt,rau củ</a>
+                            </li>
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Bách hóa</a>
+                            </li>
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Nhà cửa</a>
+                            </li>
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Thiết bị số</a>
+                            </li>
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Điện thoại</a>
+                            </li>
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Mẹ & bé</a>
+                            </li>
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Làm đẹp</a>
+                            </li>
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Gia dụng</a>
+                            </li>
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Thời trang nữ</a>
+                            </li>
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Thời trang nam</a>
+                            </li>
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Giày nam</a>
+                            </li>
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Giày nữ</a>
+                            </li>
+                            <li class="body-filter-item">
+                                <a href="" class="body-filter-item-link">Đồ chơi</a>
+                            </li>
+                        </ul>
+                        <div class="body-filter-goOn">
+                            <i class="body-filter-goOn-icon fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="body-slider">
+                        <div class="body-slider-advertise-wrap">
+                            <div class="body-slider-advertise">
+                                <a class="" href="">
+                                    <img src="https://salt.tikicdn.com/cache/w1080/ts/banner/b4/33/97/99105315b79425e3a67456c394446dad.png.webp"
+                                        alt="" class="body-slider-advertise_img">
+                                </a>
+                            </div>
+
+                        </div>
+                        <div class="goOn">
+                            <div class="goOn-square-icon">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                        <div class="prevBtn">
+                            <div class="prevBtn-square-icon">
+                                <i class="fas fa-chevron-left"></i>
+                            </div>
+                        </div>
+
+                        <div class="dot-btn">
+                            <!-- <span class="dot" ></span>
+                            <span class="dot" ></span>
+                            <span class="dot" ></span> -->
+                        </div>
+
+                        <a class="body-slider-sieu-sale" href="">
+                            <img src="https://salt.tikicdn.com/cache/w400/ts/banner/ae/27/73/c8231196799108fe370c50a779be1eb4.png.webp"
+                                alt="" class="body-slider-sieu-sale-img">
+                        </a>
+
+                    </div>
+
+                    <div class="body-sock-price">
+                        <div class="body-sock-price-header">Giá sốc hôm nay</div>
+                        <div class="body-sock-price-products">
+                            <div class="grid__row">
+                                <div class="grid-column-1-6">
+                                    <div class="body-sock-price-item fade">
+                                        <a href="#" class="body-sock-price-item-link">
+                                            <div class="body-sock-price-item-img"
+                                                style="background-image:url(https://salt.tikicdn.com/cache/200x200/ts/product/ff/78/02/867901ecc74d63d86a0f04e9779e556a.jpg.webp)">
+                                            </div>
+                                            <img src="${product.imgSaleTiKi}" alt=""
+                                                class="body-sock-price-item-imgSale">
+                                            <div class="body-sock-price-item-saled">
+                                                <span class="body-sock-price-item-price">129.000 đ</span>
+                                                <span class="body-sock-price-item-sale-percent">20%</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <div class="body-sock-price-item fade">
+                                        <a href="#" class="body-sock-price-item-link">
+                                            <div class="body-sock-price-item-img"
+                                                style="background-image:url(https://salt.tikicdn.com/cache/200x200/ts/product/ff/78/02/867901ecc74d63d86a0f04e9779e556a.jpg.webp)">
+                                            </div>
+                                            <img src="${product.imgSaleTiKi}" alt=""
+                                                class="body-sock-price-item-imgSale">
+                                            <div class="body-sock-price-item-saled">
+                                                <span class="body-sock-price-item-price">129.000 đ</span>
+                                                <span class="body-sock-price-item-sale-percent">20%</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <div class="body-sock-price-item fade">
+                                        <a href="#" class="body-sock-price-item-link">
+                                            <div class="body-sock-price-item-img"
+                                                style="background-image:url(https://salt.tikicdn.com/cache/200x200/ts/product/ff/78/02/867901ecc74d63d86a0f04e9779e556a.jpg.webp)">
+                                            </div>
+                                            <img src="${product.imgSaleTiKi}" alt=""
+                                                class="body-sock-price-item-imgSale">
+                                            <div class="body-sock-price-item-saled">
+                                                <span class="body-sock-price-item-price">129.000 đ</span>
+                                                <span class="body-sock-price-item-sale-percent">20%</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <div class="body-sock-price-item fade">
+                                        <a href="#" class="body-sock-price-item-link">
+                                            <div class="body-sock-price-item-img"
+                                                style="background-image:url(https://salt.tikicdn.com/cache/200x200/ts/product/ff/78/02/867901ecc74d63d86a0f04e9779e556a.jpg.webp)">
+                                            </div>
+                                            <img src="${product.imgSaleTiKi}" alt=""
+                                                class="body-sock-price-item-imgSale">
+                                            <div class="body-sock-price-item-saled">
+                                                <span class="body-sock-price-item-price">129.000 đ</span>
+                                                <span class="body-sock-price-item-sale-percent">20%</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <div class="body-sock-price-item fade">
+                                        <a href="#" class="body-sock-price-item-link">
+                                            <div class="body-sock-price-item-img"
+                                                style="background-image:url(https://salt.tikicdn.com/cache/200x200/ts/product/ff/78/02/867901ecc74d63d86a0f04e9779e556a.jpg.webp)">
+                                            </div>
+                                            <img src="${product.imgSaleTiKi}" alt=""
+                                                class="body-sock-price-item-imgSale">
+                                            <div class="body-sock-price-item-saled">
+                                                <span class="body-sock-price-item-price">129.000 đ</span>
+                                                <span class="body-sock-price-item-sale-percent">20%</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <div class="body-sock-price-item fade">
+                                        <a href="#" class="body-sock-price-item-link">
+                                            <div class="body-sock-price-item-img"
+                                                style="background-image:url(https://salt.tikicdn.com/cache/200x200/ts/product/ff/78/02/867901ecc74d63d86a0f04e9779e556a.jpg.webp)">
+                                            </div>
+                                            <img src="${product.imgSaleTiKi}" alt=""
+                                                class="body-sock-price-item-imgSale">
+                                            <div class="body-sock-price-item-saled">
+                                                <span class="body-sock-price-item-price">129.000 đ</span>
+                                                <span class="body-sock-price-item-sale-percent">20%</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="goOn">
+                                <div class="goOn-square-icon">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="prevBtn">
+                                <div class="prevBtn-square-icon">
+                                    <i class="fas fa-chevron-left"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="body-background-sale-wrap">
+                        <a class="body-background-sale-1" href="#">
+                            <img src="https://salt.tikicdn.com/cache/w200/ts/banner/ae/7e/d7/ef340b5191a03a76f7df383103328d55.png.webp"
+                                alt="" class="body-background-sale-1-img">
+                        </a>
+                        <a class="body-background-sale-2" href="#">
+                            <img src="https://salt.tikicdn.com/cache/w750/ts/banner/29/26/79/719a409cef5a3ff19db07d4ca39f7846.png.webp"
+                                alt="" class="body-background-sale-2-img">
+                        </a>
+                        <a class="body-background-sale-1" href="#">
+                            <img src="https://salt.tikicdn.com/cache/w200/ts/banner/f7/82/4b/103b347af7a9274fad14d81ca2819382.png.webp"
+                                alt="" class="body-background-sale-1-img">
+                        </a>
+                    </div>
+
+                    <ul class="danhMuc-list">
+                        <li class="danhMuc-item">
+                            <a href="" class="danhMuc-item-link">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/upload/a0/0d/90/bab67b6da67117f40538fc54fb2dcb5e.png.webp"
+                                    alt="" class="danhMuc-item-img">
+                                <span class="danhMuc-item-name">TIKI NGON</span>
+                            </a>
+                        </li>
+                        <li class="danhMuc-item">
+                            <a href="" class="danhMuc-item-link">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/upload/a0/0d/90/bab67b6da67117f40538fc54fb2dcb5e.png.webp"
+                                    alt="" class="danhMuc-item-img">
+                                <span class="danhMuc-item-name">TIKI NGON</span>
+                            </a>
+                        </li>
+                        <li class="danhMuc-item">
+                            <a href="" class="danhMuc-item-link">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/upload/a0/0d/90/bab67b6da67117f40538fc54fb2dcb5e.png.webp"
+                                    alt="" class="danhMuc-item-img">
+                                <span class="danhMuc-item-name">TIKI NGON</span>
+                            </a>
+                        </li>
+                        <li class="danhMuc-item">
+                            <a href="" class="danhMuc-item-link">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/upload/a0/0d/90/bab67b6da67117f40538fc54fb2dcb5e.png.webp"
+                                    alt="" class="danhMuc-item-img">
+                                <span class="danhMuc-item-name">TIKI NGON</span>
+                            </a>
+                        </li>
+                        <li class="danhMuc-item">
+                            <a href="" class="danhMuc-item-link">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/upload/a0/0d/90/bab67b6da67117f40538fc54fb2dcb5e.png.webp"
+                                    alt="" class="danhMuc-item-img">
+                                <span class="danhMuc-item-name">TIKI NGON</span>
+                            </a>
+                        </li>
+                        <li class="danhMuc-item">
+                            <a href="" class="danhMuc-item-link">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/upload/a0/0d/90/bab67b6da67117f40538fc54fb2dcb5e.png.webp"
+                                    alt="" class="danhMuc-item-img">
+                                <span class="danhMuc-item-name">TIKI NGON</span>
+                            </a>
+                        </li>
+                        <li class="danhMuc-item">
+                            <a href="" class="danhMuc-item-link">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/upload/a0/0d/90/bab67b6da67117f40538fc54fb2dcb5e.png.webp"
+                                    alt="" class="danhMuc-item-img">
+                                <span class="danhMuc-item-name">TIKI NGON</span>
+                            </a>
+                        </li>
+                        <li class="danhMuc-item">
+                            <a href="" class="danhMuc-item-link">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/upload/a0/0d/90/bab67b6da67117f40538fc54fb2dcb5e.png.webp"
+                                    alt="" class="danhMuc-item-img">
+                                <span class="danhMuc-item-name">TIKI NGON</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Banner -->
+                    <div class="body-banner">
+                        <div class="grid-column-1-4">
+                            <div class="body-banner-item">
+                                <a href="">
+                                    <img src="https://salt.tikicdn.com/cache/w280/ts/banner/2c/16/95/bb90acf3c0bf2f4d0b8917404f5bbf8f.png.webp"
+                                        alt="" class="body-banner-item-img">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="grid-column-1-4">
+                            <div class="body-banner-item">
+                                <a href="">
+                                    <img src="https://salt.tikicdn.com/cache/w280/ts/banner/2c/16/95/bb90acf3c0bf2f4d0b8917404f5bbf8f.png.webp"
+                                        alt="" class="body-banner-item-img">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="grid-column-1-4">
+                            <div class="body-banner-item">
+                                <a href="">
+                                    <img src="https://salt.tikicdn.com/cache/w280/ts/banner/2c/16/95/bb90acf3c0bf2f4d0b8917404f5bbf8f.png.webp"
+                                        alt="" class="body-banner-item-img">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="grid-column-1-4">
+                            <div class="body-banner-item">
+                                <a href="">
+                                    <img src="https://salt.tikicdn.com/cache/w280/ts/banner/2c/16/95/bb90acf3c0bf2f4d0b8917404f5bbf8f.png.webp"
+                                        alt="" class="body-banner-item-img">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="body-genuine-brand">
+                        <div class="body-genuine-brand-header">
+                            <img src="./access/imgs/tichXanh.png" alt="" class="body-genuine-brand-header-img">
+                            <span class="body-genuine-brand-header-content">Thương hiệu chính hãng</span>
+                        </div>
+
+                        <div class="body-genuine-brand-banner">
+                            <div class="body-genuine-brand-banner-slide fade">
+                                <a href="" class="body-genuine-brand-bannerlink">
+                                    <img src="https://salt.tikicdn.com/cache/w750/ts/banner/05/31/18/1a306e064ff567279d7a76862e1a2a41.png.webp"
+                                        alt="" class="body-genuine-brand-banner-img">
+                                </a>
+                                <a href="" class="body-genuine-brand-banner-link">
+                                    <img src="https://salt.tikicdn.com/cache/w750/ts/banner/41/35/ca/e501805ad9b4dd2850f5302d4f2347e1.png.webp"
+                                        alt="" class="body-genuine-brand-banner-img">
+                                </a>
+                            </div>
+
+                            <div class="goOn">
+                                <div class="goOn-square-icon">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+
+                            <div class="prevBtn">
+                                <div class="prevBtn-square-icon">
+                                    <i class="fas fa-chevron-left"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="body-genuine-brand-wrap">
+                            <ul class="body-genuine-brand-list">
+                                <div class="grid-column-1-6">
+                                    <li class="body-genuine-brand-item">
+                                        <a href="" class="body-genuine-brand-item-link">
+                                            <img src="https://salt.tikicdn.com/cache/w200/ts/banner/07/5e/e0/cd1cb96f6ac7dee127f973c45e897ec9.jpg.webp"
+                                                alt="" class="body-genuine-brand-item-img">
+                                            <span class="body-genuine-brand-item-content">Tặng Coupon 80K</span>
+                                        </a>
+                                    </li>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <li class="body-genuine-brand-item">
+                                        <a href="" class="body-genuine-brand-item-link">
+                                            <img src="https://salt.tikicdn.com/cache/w200/ts/banner/07/5e/e0/cd1cb96f6ac7dee127f973c45e897ec9.jpg.webp"
+                                                alt="" class="body-genuine-brand-item-img">
+                                            <span class="body-genuine-brand-item-content">Tặng Coupon 80K</span>
+                                        </a>
+                                    </li>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <li class="body-genuine-brand-item">
+                                        <a href="" class="body-genuine-brand-item-link">
+                                            <img src="https://salt.tikicdn.com/cache/w200/ts/banner/07/5e/e0/cd1cb96f6ac7dee127f973c45e897ec9.jpg.webp"
+                                                alt="" class="body-genuine-brand-item-img">
+                                            <span class="body-genuine-brand-item-content">Tặng Coupon 80K</span>
+                                        </a>
+                                    </li>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <li class="body-genuine-brand-item">
+                                        <a href="" class="body-genuine-brand-item-link">
+                                            <img src="https://salt.tikicdn.com/cache/w200/ts/banner/07/5e/e0/cd1cb96f6ac7dee127f973c45e897ec9.jpg.webp"
+                                                alt="" class="body-genuine-brand-item-img">
+                                            <span class="body-genuine-brand-item-content">Tặng Coupon 80K</span>
+                                        </a>
+                                    </li>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <li class="body-genuine-brand-item">
+                                        <a href="" class="body-genuine-brand-item-link">
+                                            <img src="https://salt.tikicdn.com/cache/w200/ts/banner/07/5e/e0/cd1cb96f6ac7dee127f973c45e897ec9.jpg.webp"
+                                                alt="" class="body-genuine-brand-item-img">
+                                            <span class="body-genuine-brand-item-content">Tặng Coupon 80K</span>
+                                        </a>
+                                    </li>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <li class="body-genuine-brand-item">
+                                        <a href="" class="body-genuine-brand-item-link">
+                                            <img src="https://salt.tikicdn.com/cache/w200/ts/banner/07/5e/e0/cd1cb96f6ac7dee127f973c45e897ec9.jpg.webp"
+                                                alt="" class="body-genuine-brand-item-img">
+                                            <span class="body-genuine-brand-item-content">Tặng Coupon 80K</span>
+                                        </a>
+                                    </li>
+                                </div>
+                            </ul>
+
+                            <div class="goOn">
+                                <div class="goOn-square-icon">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="prevBtn">
+                                <div class="prevBtn-square-icon">
+                                    <i class="fas fa-chevron-left"></i>
+                                </div>
+                            </div>
+                            <div class="dot-btn">
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Danh muc noi bat -->
+                    <div class="body-featured-categories">
+                        <div class="body-featured-categories-header">
+                            <span>Danh mục nổi bật</span>
+                        </div>
+                        <ul class="body-featured-categories-list">
+                            <li class="body-featured-categories-item">
+                                <a href="">
+                                    <img src="https://salt.tikicdn.com/cache/w100/ts/category/a6/9f/45/460fdecbbe0f81da09c7da37aa08f680.png.webp"
+                                        alt="" class="body-featured-categories-item-img">
+                                    <span class="body-featured-categories-item-name">Thực phẩm tươi sống</span>
+                                </a>
+                            </li>
+                            <li class="body-featured-categories-item">
+                                <a href="">
+                                    <img src="https://salt.tikicdn.com/cache/w100/ts/category/a6/9f/45/460fdecbbe0f81da09c7da37aa08f680.png.webp"
+                                        alt="" class="body-featured-categories-item-img">
+                                    <span class="body-featured-categories-item-name">Thực phẩm tươi sống</span>
+                                </a>
+                            </li>
+                            <li class="body-featured-categories-item">
+                                <a href="">
+                                    <img src="https://salt.tikicdn.com/cache/w100/ts/category/a6/9f/45/460fdecbbe0f81da09c7da37aa08f680.png.webp"
+                                        alt="" class="body-featured-categories-item-img">
+                                    <span class="body-featured-categories-item-name">Thực phẩm tươi sống</span>
+                                </a>
+                            </li>
+                            <li class="body-featured-categories-item">
+                                <a href="">
+                                    <img src="https://salt.tikicdn.com/cache/w100/ts/category/a6/9f/45/460fdecbbe0f81da09c7da37aa08f680.png.webp"
+                                        alt="" class="body-featured-categories-item-img">
+                                    <span class="body-featured-categories-item-name">Thực phẩm tươi sống</span>
+                                </a>
+                            </li>
+                            <li class="body-featured-categories-item">
+                                <a href="">
+                                    <img src="https://salt.tikicdn.com/cache/w100/ts/category/a6/9f/45/460fdecbbe0f81da09c7da37aa08f680.png.webp"
+                                        alt="" class="body-featured-categories-item-img">
+                                    <span class="body-featured-categories-item-name">Thực phẩm tươi sống</span>
+                                </a>
+                            </li>
+                            <li class="body-featured-categories-item">
+                                <a href="">
+                                    <img src="https://salt.tikicdn.com/cache/w100/ts/category/a6/9f/45/460fdecbbe0f81da09c7da37aa08f680.png.webp"
+                                        alt="" class="body-featured-categories-item-img">
+                                    <span class="body-featured-categories-item-name">Thực phẩm tươi sống</span>
+                                </a>
+                            </li>
+                            <li class="body-featured-categories-item">
+                                <a href="">
+                                    <img src="https://salt.tikicdn.com/cache/w100/ts/category/a6/9f/45/460fdecbbe0f81da09c7da37aa08f680.png.webp"
+                                        alt="" class="body-featured-categories-item-img">
+                                    <span class="body-featured-categories-item-name">Thực phẩm tươi sống</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Xu huong mua sam -->
+                    <div class="body-trending">
+                        <div class="body-trending-header">
+                            <img src="https://salt.tikicdn.com/ts/upload/c7/ee/c2/d52a63b18732d5a77a9be29e7c3623a2.png"
+                                alt="" class="body-trending-header-img">
+                            <span class="body-trending-header-title">Xu hướng mua sắm</span>
+                        </div>
+                        <ul class="body-trending-list">
+                            <div class="grid-column-1-4">
+                                <li class="body-trending-item">
+                                    <a href="">
+                                        <span class="body-trending-item-name">Sách tôn giáo</span>
+                                        <span class="body-trending-item-sale">Giảm đến 45%</span>
+                                        <div class="body-trending-item-img">
+                                            <img src="https://salt.tikicdn.com/cache/w100/ts/product/30/ee/5a/e2aed009bb558b5d2cfbbe157b428ba4.jpg.webp"
+                                                alt="" class="body-trending-item-img1">
+                                            <img src="https://salt.tikicdn.com/cache/w100/ts/product/d5/a0/ff/6b76d7be9aebd04897db41f1cf0533fa.jpg.webp"
+                                                alt="" class="body-trending-item-img1">
+                                        </div>
+                                    </a>
+                                </li>
+                            </div>
+                            <div class="grid-column-1-4">
+                                <li class="body-trending-item">
+                                    <a href="">
+                                        <span class="body-trending-item-name">Sách tôn giáo</span>
+                                        <span class="body-trending-item-sale">Giảm đến 45%</span>
+                                        <div class="body-trending-item-img">
+                                            <img src="https://salt.tikicdn.com/cache/w100/ts/product/30/ee/5a/e2aed009bb558b5d2cfbbe157b428ba4.jpg.webp"
+                                                alt="" class="body-trending-item-img1">
+                                            <img src="https://salt.tikicdn.com/cache/w100/ts/product/d5/a0/ff/6b76d7be9aebd04897db41f1cf0533fa.jpg.webp"
+                                                alt="" class="body-trending-item-img1">
+                                        </div>
+                                    </a>
+                                </li>
+                            </div>
+                            <div class="grid-column-1-4">
+                                <li class="body-trending-item">
+                                    <a href="">
+                                        <span class="body-trending-item-name">Sách tôn giáo</span>
+                                        <span class="body-trending-item-sale">Giảm đến 45%</span>
+                                        <div class="body-trending-item-img">
+                                            <img src="https://salt.tikicdn.com/cache/w100/ts/product/30/ee/5a/e2aed009bb558b5d2cfbbe157b428ba4.jpg.webp"
+                                                alt="" class="body-trending-item-img1">
+                                            <img src="https://salt.tikicdn.com/cache/w100/ts/product/d5/a0/ff/6b76d7be9aebd04897db41f1cf0533fa.jpg.webp"
+                                                alt="" class="body-trending-item-img1">
+                                        </div>
+                                    </a>
+                                </li>
+                            </div>
+                            <div class="grid-column-1-4">
+                                <li class="body-trending-item">
+                                    <a href="">
+                                        <span class="body-trending-item-name">Sách tôn giáo</span>
+                                        <span class="body-trending-item-sale">Giảm đến 45%</span>
+                                        <div class="body-trending-item-img">
+                                            <img src="https://salt.tikicdn.com/cache/w100/ts/product/30/ee/5a/e2aed009bb558b5d2cfbbe157b428ba4.jpg.webp"
+                                                alt="" class="body-trending-item-img1">
+                                            <img src="https://salt.tikicdn.com/cache/w100/ts/product/d5/a0/ff/6b76d7be9aebd04897db41f1cf0533fa.jpg.webp"
+                                                alt="" class="body-trending-item-img1">
+                                        </div>
+                                    </a>
+                                </li>
+                            </div>
+
+                            <div class="goOn">
+                                <div class="goOn-square-icon">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+
+                            <div class="prevBtn">
+                                <div class="prevBtn-square-icon">
+                                    <i class="fas fa-chevron-left"></i>
+                                </div>
+                            </div>
+                        </ul>
+                    </div>
+
+                    <!-- Goi y hom nay -->
+                    <div class="body-recomment-today">
+                        <div class="body-recomment-today-header">
+                            <span>Gợi ý hôm nay</span>
+                        </div>
+
+                        <ul class="body-recomment-today-list">
+                            <li class="body-recomment-today-item select">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/personalish/f9/27/b5/3a8e2286a1c8fb91b67acc5ee35f82f0.png.webp"
+                                    alt="" class="body-recomment-today-item-img">
+                                <span class="body-recomment-today-item-title">Dành cho bạn</span>
+                            </li>
+                            <li class="body-recomment-today-item select">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/personalish/f9/27/b5/3a8e2286a1c8fb91b67acc5ee35f82f0.png.webp"
+                                    alt="" class="body-recomment-today-item-img">
+                                <span class="body-recomment-today-item-title">Dành cho bạn</span>
+                            </li>
+                            <li class="body-recomment-today-item select">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/personalish/f9/27/b5/3a8e2286a1c8fb91b67acc5ee35f82f0.png.webp"
+                                    alt="" class="body-recomment-today-item-img">
+                                <span class="body-recomment-today-item-title">Dành cho bạn</span>
+                            </li>
+                            <li class="body-recomment-today-item select">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/personalish/f9/27/b5/3a8e2286a1c8fb91b67acc5ee35f82f0.png.webp"
+                                    alt="" class="body-recomment-today-item-img">
+                                <span class="body-recomment-today-item-title">Dành cho bạn</span>
+                            </li>
+                            <li class="body-recomment-today-item select">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/personalish/f9/27/b5/3a8e2286a1c8fb91b67acc5ee35f82f0.png.webp"
+                                    alt="" class="body-recomment-today-item-img">
+                                <span class="body-recomment-today-item-title">Dành cho bạn</span>
+                            </li>
+                            <li class="body-recomment-today-item select">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/personalish/f9/27/b5/3a8e2286a1c8fb91b67acc5ee35f82f0.png.webp"
+                                    alt="" class="body-recomment-today-item-img">
+                                <span class="body-recomment-today-item-title">Dành cho bạn</span>
+                            </li>
+                            <li class="body-recomment-today-item select">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/personalish/f9/27/b5/3a8e2286a1c8fb91b67acc5ee35f82f0.png.webp"
+                                    alt="" class="body-recomment-today-item-img">
+                                <span class="body-recomment-today-item-title">Dành cho bạn</span>
+                            </li>
+                            <li class="body-recomment-today-item select">
+                                <img src="https://salt.tikicdn.com/cache/w100/ts/personalish/f9/27/b5/3a8e2286a1c8fb91b67acc5ee35f82f0.png.webp"
+                                    alt="" class="body-recomment-today-item-img">
+                                <span class="body-recomment-today-item-title">Dành cho bạn</span>
+                            </li>
+                        </ul>
+
+                        <ul class="body-recomment-today-product-list">
+                            <div class="grid__row">
+                                <div class="grid-column-1-6">
+                                    <li class="body-recomment-today-product-item">
+                                        <a href="">
+                                            <div class="body-recomment-today-product-item-img-wrap">
+                                                <img class="body-recomment-today-product-item-img"
+                                                    src="https://salt.tikicdn.com/cache/200x200/ts/product/3c/01/12/f845fbb8e70a3330dfb1e5732d52b672.jpg.webp"
+                                                    alt="">
+                                                <img src="https://salt.tikicdn.com/ts/upload/dc/0d/49/ef9dc5d8164bd62b011e54276502b342.png"
+                                                    alt="" class="body-recomment-today-product-item-img-freeShip">
+                                            </div>
+                                            <span class="body-recomment-today-product-item-name">Ví da nam dáng ngang
+                                                play boy</span>
+                                            <div class="body-recomment-today-product-item-danhGia">
+                                                <div class="body-recomment-today-product-item-danhGia-star">
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                </div>
+                                                <div class="body-recomment-today-product-item-danhGia-sold">| Đã bán 43
+                                                </div>
+                                            </div>
+                                            <div class="body-recomment-today-product-item-price">
+                                                <span>22.000 <span style="text-decoration:underline;">đ</span> </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <li class="body-recomment-today-product-item">
+                                        <a href="">
+                                            <div class="body-recomment-today-product-item-img-wrap">
+                                                <img class="body-recomment-today-product-item-img"
+                                                    src="https://salt.tikicdn.com/cache/200x200/ts/product/3c/01/12/f845fbb8e70a3330dfb1e5732d52b672.jpg.webp"
+                                                    alt="">
+                                                <img src="https://salt.tikicdn.com/ts/upload/dc/0d/49/ef9dc5d8164bd62b011e54276502b342.png"
+                                                    alt="" class="body-recomment-today-product-item-img-freeShip">
+                                            </div>
+                                            <span class="body-recomment-today-product-item-name">Ví da nam dáng ngang
+                                                play boy</span>
+                                            <div class="body-recomment-today-product-item-danhGia">
+                                                <div class="body-recomment-today-product-item-danhGia-star">
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                </div>
+                                                <div class="body-recomment-today-product-item-danhGia-sold">| Đã bán 43
+                                                </div>
+                                            </div>
+                                            <div class="body-recomment-today-product-item-price">
+                                                <span>22.000 <span style="text-decoration:underline;">đ</span> </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <li class="body-recomment-today-product-item">
+                                        <a href="">
+                                            <div class="body-recomment-today-product-item-img-wrap">
+                                                <img class="body-recomment-today-product-item-img"
+                                                    src="https://salt.tikicdn.com/cache/200x200/ts/product/3c/01/12/f845fbb8e70a3330dfb1e5732d52b672.jpg.webp"
+                                                    alt="">
+                                                <img src="https://salt.tikicdn.com/ts/upload/dc/0d/49/ef9dc5d8164bd62b011e54276502b342.png"
+                                                    alt="" class="body-recomment-today-product-item-img-freeShip">
+                                            </div>
+                                            <span class="body-recomment-today-product-item-name">Ví da nam dáng ngang
+                                                play boy</span>
+                                            <div class="body-recomment-today-product-item-danhGia">
+                                                <div class="body-recomment-today-product-item-danhGia-star">
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                </div>
+                                                <div class="body-recomment-today-product-item-danhGia-sold">| Đã bán 43
+                                                </div>
+                                            </div>
+                                            <div class="body-recomment-today-product-item-price">
+                                                <span>22.000 <span style="text-decoration:underline;">đ</span> </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <li class="body-recomment-today-product-item">
+                                        <a href="">
+                                            <div class="body-recomment-today-product-item-img-wrap">
+                                                <img class="body-recomment-today-product-item-img"
+                                                    src="https://salt.tikicdn.com/cache/200x200/ts/product/3c/01/12/f845fbb8e70a3330dfb1e5732d52b672.jpg.webp"
+                                                    alt="">
+                                                <img src="https://salt.tikicdn.com/ts/upload/dc/0d/49/ef9dc5d8164bd62b011e54276502b342.png"
+                                                    alt="" class="body-recomment-today-product-item-img-freeShip">
+                                            </div>
+                                            <span class="body-recomment-today-product-item-name">Ví da nam dáng ngang
+                                                play boy</span>
+                                            <div class="body-recomment-today-product-item-danhGia">
+                                                <div class="body-recomment-today-product-item-danhGia-star">
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                </div>
+                                                <div class="body-recomment-today-product-item-danhGia-sold">| Đã bán 43
+                                                </div>
+                                            </div>
+                                            <div class="body-recomment-today-product-item-price">
+                                                <span>22.000 <span style="text-decoration:underline;">đ</span> </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <li class="body-recomment-today-product-item">
+                                        <a href="">
+                                            <div class="body-recomment-today-product-item-img-wrap">
+                                                <img class="body-recomment-today-product-item-img"
+                                                    src="https://salt.tikicdn.com/cache/200x200/ts/product/3c/01/12/f845fbb8e70a3330dfb1e5732d52b672.jpg.webp"
+                                                    alt="">
+                                                <img src="https://salt.tikicdn.com/ts/upload/dc/0d/49/ef9dc5d8164bd62b011e54276502b342.png"
+                                                    alt="" class="body-recomment-today-product-item-img-freeShip">
+                                            </div>
+                                            <span class="body-recomment-today-product-item-name">Ví da nam dáng ngang
+                                                play boy</span>
+                                            <div class="body-recomment-today-product-item-danhGia">
+                                                <div class="body-recomment-today-product-item-danhGia-star">
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                </div>
+                                                <div class="body-recomment-today-product-item-danhGia-sold">| Đã bán 43
+                                                </div>
+                                            </div>
+                                            <div class="body-recomment-today-product-item-price">
+                                                <span>22.000 <span style="text-decoration:underline;">đ</span> </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </div>
+                                <div class="grid-column-1-6">
+                                    <li class="body-recomment-today-product-item">
+                                        <a href="">
+                                            <div class="body-recomment-today-product-item-img-wrap">
+                                                <img class="body-recomment-today-product-item-img"
+                                                    src="https://salt.tikicdn.com/cache/200x200/ts/product/3c/01/12/f845fbb8e70a3330dfb1e5732d52b672.jpg.webp"
+                                                    alt="">
+                                                <img src="https://salt.tikicdn.com/ts/upload/dc/0d/49/ef9dc5d8164bd62b011e54276502b342.png"
+                                                    alt="" class="body-recomment-today-product-item-img-freeShip">
+                                            </div>
+                                            <span class="body-recomment-today-product-item-name">Ví da nam dáng ngang
+                                                play boy</span>
+                                            <div class="body-recomment-today-product-item-danhGia">
+                                                <div class="body-recomment-today-product-item-danhGia-star">
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                    <i
+                                                        class="body-recomment-today-product-item-danhGia-star-icon fas fa-star"></i>
+                                                </div>
+                                                <div class="body-recomment-today-product-item-danhGia-sold">| Đã bán 43
+                                                </div>
+                                            </div>
+                                            <div class="body-recomment-today-product-item-price">
+                                                <span>22.000 <span style="text-decoration:underline;">đ</span> </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </div>
+                            </div>
+
+                            <button class="body-recomment-today-product-item-seeMore-btn">Xem thêm</button>
+
+                            <button class="body-recomment-today-product-item-anBot-btn">Ẩn bớt</button>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div id="footer">
+                <div class="grid">
+                    <div class="footer-app-tiki">
+                        <ul class="footer-hoTro-list">
+                            <div class="footer-list-header">Hỗ trợ khách hàng</div>
+                            <li class="footer-item">
+                                <a href="">Holine: 1900-6035</a>
+                            </li>
+                            <li class="footer-item">
+                                <a href="">Các câu hỏi thường gặp</a>
+                            </li>
+                            <li class="footer-item">
+                                <a href="">Gửi yêu cầu hỗ trợ</a>
+                            </li>
+                            <li class="footer-item">
+                                <a href="">Hướng dẫn đặt hàng</a>
+                            </li>
+                        </ul>
+
+                        <!-- ve tiki -->
+                        <ul class="footer-about-tiki-list">
+                            <div class="footer-list-header">Về tiki</div>
+                            <li class="footer-item">
+                                <a href="">Giới thiệu tiki</a>
+                            </li>
+                        </ul>
+
+                        <!-- Hop tac -->
+                        <ul class="footer-hopTac">
+                            <div class="footer-list-header">Hợp tác và liên kết</div>
+                            <li class="footer-item">
+                                <a href="">Quy chế hợp tác sàn GDTMĐT</a>
+                            </li>
+                            <li class="footer-item">
+                                <a href="">Bán hàng cùng Tiki</a>
+                            </li>
+                            <div class="footer-hopTac-chungNhan">
+                                <div class="tieuDePhu">Chứng nhận bởi</div>
+                                <div class="footer-hopTac-chungNhan-anh">
+                                    <img src="https://frontend.tikicdn.com/_desktop-next/static/img/footer/bo-cong-thuong-2.png"
+                                        alt="" class="footer-hopTac-chungNhan-img">
+                                    <img src="https://frontend.tikicdn.com/_desktop-next/static/img/footer/bo-cong-thuong.svg"
+                                        alt="" class="footer-hopTac-chungNhan-img">
+                                </div>
+                            </div>
+                        </ul>
+
+                        <!-- Thanh toan -->
+                        <ul class="footer-thanhToan">
+                            <div class="footer-list-header">Phương thức thanh toán</div>
+                            <li class="footer-thanhToan-item">Tiki pay</li>
+                            <li class="footer-thanhToan-item">Visa</li>
+                            <li class="footer-thanhToan-item">ATM</li>
+                            <li class="footer-thanhToan-item">Zalo pay</li>
+                            <li class="footer-thanhToan-item">Moca</li>
+                            <div class="footer-thanhToan-giaoHang">
+                                <div class="tieuDePhu">Dịch vụ giao hàng</div>
+                                <img src="https://static.wixstatic.com/media/6e68b4_245b828eb23a404b9aba586a8fb0292c~mv2.png/v1/crop/x_39,y_33,w_200,h_99/fill/w_138,h_68,al_c,q_85,usm_0.66_1.00_0.01/images.webp"
+                                    alt="" class="footer-thanhToan-giaoHang-img">
+                            </div>
+                        </ul>
+
+                        <!-- Ket noi -->
+                        <ul class="footer-ketNoi">
+                            <div class="footer-list-header">Kết nối với chúng tôi</div>
+                            <div class="footer-ketNoi-item-wrap">
+                                <li class="footer-ketNoi-item">
+                                    <a href="">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png"
+                                            alt="" class="footer-ketNoi-item-img">
+                                    </a>
+                                </li>
+                                <li class="footer-ketNoi-item">
+                                    <a href="">
+                                        <img src="https://banner2.cleanpng.com/20180701/ori/kisspng-youtube-computer-icons-logo-clip-art-5b3871d0eaddb7.296285981530425808962.jpg"
+                                            alt="" class="footer-ketNoi-item-img">
+                                    </a>
+                                </li>
+                                <li class="footer-ketNoi-item">
+                                    <a href="">
+                                        <img src="https://image.pngaaa.com/640/5985640-middle.png" alt=""
+                                            class="footer-ketNoi-item-img">
+                                    </a>
+                                </li>
+                            </div>
+
+                            <!-- Tai ung dung -->
+                            <div class="footer-ketNoi-taiTuDT">
+                                <div class="tieuDePhu">Tải ứng dụng trên điện thoại</div>
+                                <div class="footer-ketNoi-taiTuDT-list">
+                                    <img src="https://frontend.tikicdn.com/_desktop-next/static/img/footer/qrcode.png"
+                                        alt="" class="footer-ketNoi-taiTuDT-list-QRcode">
+                                    <div class="footer-ketNoi-taiTuDT-list-mobile">
+                                        <a href="" class="">
+                                            <img src="https://frontend.tikicdn.com/_desktop-next/static/img/icons/appstore.png"
+                                                alt="" class="footer-ketNoi-taiTuDT-list-mobile-img">
+                                        </a>
+                                        <a href="" class="">
+                                            <img src="https://frontend.tikicdn.com/_desktop-next/static/img/icons/playstore.png"
+                                                alt="" class="footer-ketNoi-taiTuDT-list-mobile-img">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal ">
+            <div class="modal-overlay">
+
+            </div>
+            <div class="modal-body">
+                <div class="auth-form">
+                    <div class="auth-form__container">
+                        <div class="auth-form__container-login">
+                            <div class="auth-form__container-login-heading">
+                                <h4 class="auth-form__container-heading-welcome">Xin chào,</h4>
+                                <span class="auth-form__container-heading-login">Đăng nhập hoặc tạo tài khoản</span>
+                            </div>
+
+                            <div class="auth-form__container-login-body">
+                                <input type="text" class="auth-form__container-login-body-input"
+                                    placeholder="Nhập số điện thoại">
+                                <button class="auth-form__container-login-body-btn">
+                                    Tiếp tục
+                                </button>
+                                <a href="" class="auth-form__container-login-body-email">
+                                    Đăng nhập bằng email
+                                </a>
+                            </div>
+
+                            <div class="auth-form__container-login-footer">
+                                <div class="auth-form__container-login-footer-title">Hoặc tiếp tục bằng</div>
+                                <ul class="auth-form__container-login-footer-list">
+                                    <li class="auth-form__container-login-footer-item">
+                                        <a href="">
+                                            <img src="https://salt.tikicdn.com/ts/upload/3a/22/45/0f04dc6e4ed55fa62dcb305fd337db6c.png"
+                                                alt="" class="auth-form__container-login-footer-item-img">
+                                        </a>
+                                    </li>
+                                    <li class="auth-form__container-login-footer-item">
+                                        <a href="">
+                                            <img src="https://salt.tikicdn.com/ts/upload/1c/ac/e8/141c68302262747f5988df2aae7eb161.png"
+                                                alt="" class="auth-form__container-login-footer-item-img">
+                                        </a>
+                                    </li>
+                                    <li class="auth-form__container-login-footer-item">
+                                        <a href="">
+                                            <img src="https://salt.tikicdn.com/ts/upload/98/37/86/517cfc05f04466b3118357a1fb4182c8.png"
+                                                alt="" class="auth-form__container-login-footer-item-img">
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="auth-form__container-login-footer-dieuKhoan">
+                                    Bằng việc tiếp tục bạn đã chấp nhận
+                                    <a href="" class="">điều khoản sử dụng</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="auth-form__container-background">
+                            <div class="auth-form__container-background-content">
+                                <img src="https://salt.tikicdn.com/ts/upload/eb/f3/a3/25b2ccba8f33a5157f161b6a50f64a60.png"
+                                    alt="" class="auth-form__container-background-content-img">
+                                <div class="auth-form__container-background-content-title">
+                                    <h4>Mua sắm tại Tiki</h4>
+                                    <p>Siêu ưu đãi mỗi ngày</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="auth-form__container-close">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <script type="module" src="./index.js"></script>
+</body>
+
+</html>
